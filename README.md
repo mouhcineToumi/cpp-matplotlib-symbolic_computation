@@ -24,5 +24,6 @@ g++ -o main main.cpp -lginac -std=c++11 -I/usr/include/python2.7 -lpython2.7
 ```
 
 ## run
+```
 ./main
-
+```
