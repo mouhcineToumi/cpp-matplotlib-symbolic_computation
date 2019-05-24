@@ -13,7 +13,7 @@ using namespace GiNaC;
 
 #define PI 3.14159265
 
-//nos symboles
+
 symbol x("x"), y("y");
 
 
@@ -32,7 +32,7 @@ ex vitx(ex psi){
   	return -psi.diff(x);
 }
 
-//le cercle
+
 void trc_circle(double rad){
 	int n = 5000; // number of data points
 	vector<double> x(n),y(n); 
@@ -44,58 +44,62 @@ void trc_circle(double rad){
 	plt::plot(x, y, "-k");
 }
 
-//drawing the arrows
+
 void trc_cour(ex u, ex v){
-    
-    	std::vector<double> xx, yy, lu, lv;
-	for (double i = -7; i <= 7; i+= 0.5) {
-        for (double j = -7; j <= 7; j+=0.5) {
-            //in case of x == 0
-	    if( i == 0 )
+    // u and v are respectively the x and y components of the arrows we're plotting
+    std::vector<double> xx, yy, lu, lv;
+
+    for (double i = -7; i <= 7; i+= 1) {
+        for (double j = -7; j <= 7; j+=1) {
+            if( i == 0 )
             	continue;
-		
-	    //xx, yy are the positions of the arrows
+
             xx.push_back(i);
             yy.push_back(j);
-	    
-	   //get the values from the expressions
+            
             ex f = evalf(u.subs(x==i).subs(y==j));
             ex g = evalf(v.subs(x==i).subs(y==j));
-		
-	    //lu, lv are the directions according to the x-axis and y-axis
-            lu.push_back( ex_to<numeric>(f).to_double() );
-            lv.push_back( ex_to<numeric>(g).to_double() );
+
+            
+           	lu.push_back( ex_to<numeric>(f).to_double() );
+           	lv.push_back( ex_to<numeric>(g).to_double() );
            	
         }
     }
 
+   	//cout << u.subs(x==1) << endl;
     plt::quiver(xx, yy, lu, lv);
+
 }
 
 
 
-//tracer tout
-void trc_ligneCourant(ex u, ex v){
+
+void trc_ligneCourant(ex u, ex v, double R = 1){
 
 	plt::suptitle("My plot");
 	plt::xlim(-5,5);
 	plt::ylim(-5,5);
-	
-	trc_circle(1);
+
+	trc_circle(R);
 	trc_cour( u, v);
-    	
-	plt::show();
+
+  plt::show();
 }
 
 
 
 
 int main(){
-	ex psi = ecoul();
+
+  double R = 3;
+	
+	ex psi = ecoul( 1, R);
 	ex u = vity(psi);
 	ex v = vitx(psi);
 
-	trc_ligneCourant( u, v);
+	trc_ligneCourant( u, v, R);
+
 
 
 return 0;}
